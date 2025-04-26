@@ -17,6 +17,7 @@ import { router } from 'expo-router';
 import { lightTheme } from '../../../useTheme';
 import { fetchRestaurantsWithDistance } from '../../services/restaurantService';
 import { RestaurantWithDistance } from '../../services/restaurantType';
+import { useRestaurantStore } from '../../stores/restaurantStore';
 
 type FilterOptions = {
   cuisines: string[];
@@ -58,8 +59,8 @@ const DiscoverScreen = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [restaurants, setRestaurants] = useState<RestaurantWithDistance[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const {restaurants, setRestaurants} = useRestaurantStore();
 
   const loadData = async () => {
     try {
@@ -71,6 +72,7 @@ const DiscoverScreen = () => {
       }
 
       setRestaurants(restaurantsData);
+      
       setError(null);
     } catch (err) {
       console.error('Failed to load data:', err);
