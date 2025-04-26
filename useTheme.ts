@@ -7,6 +7,7 @@ export const lightTheme = {
     tabBar: '#FFFFFF',
     tabIconActive: '#9747FF',
     tabIconInactive: '#8E8E93',
+    border: '#e0e0e0',
   },
 };
 

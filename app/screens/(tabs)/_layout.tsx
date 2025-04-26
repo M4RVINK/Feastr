@@ -16,13 +16,7 @@ export default function TabLayout() {
           paddingBottom: 24,
           borderTopWidth: 0,
         },
-        headerStyle: {
-          backgroundColor: lightTheme.colors.tabBar,
-        },
-        headerTitleStyle: {
-          color: lightTheme.colors.primary,
-          fontFamily: 'Inter-SemiBold',
-        },
+        headerShown: false,
       }}
     >
       <Tabs.Screen

@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence} from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Config } from './config';
 
 
 
@@ -8,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Your Firebase config object
 const firebaseConfig = {
-  apiKey: 'AIzaSyAz-UJKbaLQYXWElsMKghW5uX3SudSppvc',
+  apiKey: Config.FIREBASE_KEY,
   authDomain: 'feastr-app.firebaseapp.com',
   projectId: 'feastr-app',
   storageBucket: 'feastr-app.firebasestorage.app',

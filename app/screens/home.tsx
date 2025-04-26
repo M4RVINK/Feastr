@@ -51,7 +51,7 @@ const HomeScreen = () => {
               toValue: 0,
               duration: 500,
               useNativeDriver: true,
-            }).start(() => router.push('/screens/(tabs)/ai_recs'));
+            }).start(() => router.push('/screens/(tabs)/discover'));
           }, 1500);
         }
       } else {

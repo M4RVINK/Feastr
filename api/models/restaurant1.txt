@@ -1,0 +1,187 @@
+{
+  "name": "Roadster Diner",
+  "description": "A cozy restaurant with a sea/mountain view offering authentic international cuisine.",
+  "tags": ["casual", "family-friendly", "international", "mountain view", "seaview"],
+  "cuisine": "international",
+  "view": ["mountain", "sea"],
+  "seating_capacity": 85,
+  "opening_times": [],
+  "location": {
+    "lat": 33.88578623221294,
+    "lng": 35.63920042455861
+  },
+  "address": {
+    "street": "brummana",
+    "city": "Brummana",
+    "zip": "0"
+  },
+  "contact_info": {
+    "phone_number": "961 04 865 591",
+    "website_url": "https://roadsterdiner.com/"
+  },
+  "menu": [
+    {
+      "menu_pdf_link": "https://catalog.loyaltyfeed.com/roadster/RDMENUDEL/0e755f53-5acc-4e4a-8e12-47d97b1d80f9/#_9d60094b-b39d-4876-b2fe-9e58bfc570b9",
+      "items": [
+        {
+          "name": "Super Sampler",
+          "description": "A sampler of various appetizers.",
+          "price": 22.00,
+          "tags": ["appetizer", "fried", "sharing", "cheese", "crispy"],
+          "rating": 4.6
+        },
+        {
+          "name": "Mighty cheddar temptation",
+          "description": "A cheesy chicken burger.",
+          "price": 17.00,
+          "tags": ["burger", "chicken", "main", "cheese", "comfort food", "savory"],
+          "rating": 4.3
+        },
+        {
+          "name": "Buffalo double crunch",
+          "description": "Crunchy buffalo chicken with spicy flavors.",
+          "price": 11.50,
+          "tags": ["chicken", "crispy", "spicy", "main", "fried"],
+          "rating": 4.4
+        },
+        {
+          "name": "Burger tacos",
+          "description": "A fusion of tacos and burgers.",
+          "price": 11.50,
+          "tags": ["wrap", "spicy", "beef", "fusion", "savory"],
+          "rating": 4.5
+        },
+        {
+          "name": "Four cheese pasta",
+          "description": "Creamy pasta with four types of cheese.",
+          "price": 9.50,
+          "tags": ["pasta", "cheese", "vegetarian", "creamy", "comfort food"],
+          "rating": 4.4
+        },
+        {
+          "name": "Chicken Caesar Salad",
+          "description": "A healthy salad with grilled chicken.",
+          "price": 10.50,
+          "tags": ["salad", "chicken", "healthy", "low-calorie", "protein", "creamy"],
+          "rating": 4.8
+        },
+        {
+          "name": "Steak 'n' cheese",
+          "description": "A hearty steak and cheese sandwich.",
+          "price": 15.50,
+          "tags": ["main", "beef", "sandwich", "hearty", "savory", "grilled"],
+          "rating": 4.6
+        },
+        {
+          "name": "Truffle Fries",
+          "description": "Crispy fries with truffle oil.",
+          "price": 12.00,
+          "tags": ["appetizer", "sides", "cheese", "crispy", "luxury", "savory"],
+          "rating": 4.5
+        },
+        {
+          "name": "Grand lazy cake",
+          "description": "A rich and indulgent chocolate cake.",
+          "price": 4.00,
+          "tags": ["dessert", "chocolate", "sweet", "indulgent", "rich"],
+          "rating": 4.2
+        },
+        {
+          "name": "Double oreo blast",
+          "description": "Oreo and cream dessert.",
+          "price": 4.50,
+          "tags": ["dessert", "chocolate", "sweet", "indulgent", "oreo", "creamy"],
+          "rating": 4.5
+        },
+        {
+          "name": "Mighty chicken",
+          "description": "A crispy chicken burger.",
+          "price": 11.50,
+          "tags": ["burger", "chicken", "main", "savory", "crispy"],
+          "rating": 4.6
+        },
+        {
+          "name": "Classic Nachos",
+          "description": "Cheesy nachos with salsa.",
+          "price": 9.00,
+          "tags": ["appetizer", "mexican", "sharing", "cheese", "savory"],
+          "rating": 4.4
+        },
+        {
+          "name": "Chicken Pasta",
+          "description": "Creamy pasta with chicken.",
+          "price": 14.50,
+          "tags": ["pasta", "chicken", "creamy", "main", "comfort food", "hearty"],
+          "rating": 4.5
+        },
+        {
+          "name": "Vegan quinoa salad",
+          "description": "A healthy vegan salad.",
+          "price": 9.00,
+          "tags": ["salad", "vegan", "healthy", "light", "low-calorie", "protein"],
+          "rating": 4.3
+        },
+        {
+          "name": "B.B.B chicken",
+          "description": "Grilled chicken burger with BBQ sauce.",
+          "price": 10.50,
+          "tags": ["burger", "chicken", "main", "savory", "grilled"],
+          "rating": 4.5
+        },
+        {
+          "name": "Shrimp pasta",
+          "description": "Creamy pasta with shrimp.",
+          "price": 16.00,
+          "tags": ["pasta", "creamy", "seafood", "main", "luxury", "hearty"],
+          "rating": 4.4
+        },
+        {
+          "name": "Brownie temptation",
+          "description": "A rich chocolate brownie.",
+          "price": 6.00,
+          "tags": ["dessert", "chocolate", "sweet", "indulgent", "rich"],
+          "rating": 4.6
+        },
+        {
+          "name": "Lotus mud pie",
+          "description": "A rich and creamy Lotus mud pie.",
+          "price": 4.50,
+          "tags": ["dessert", "lotus", "sweet", "indulgent", "rich", "creamy"],
+          "rating": 4.7
+        },
+        {
+          "name": "Mac chick 'n' cheese",
+          "description": "Mac and cheese with chicken.",
+          "price": 11.00,
+          "tags": ["appetizer", "cheese", "chicken", "savory", "comfort food"],
+          "rating": 4.5
+        },
+        {
+          "name": "Steak 'n' fries",
+          "description": "Steak served with fries.",
+          "price": 22.00,
+          "tags": ["steak", "platter", "main", "hearty", "grilled", "savory"],
+          "rating": 4.7
+        }
+      ]
+    }
+  ],
+  "ratings": {
+    "average_rating": 4.4,
+    "total_reviews": 930,
+    "detailed": {
+      "food": 4.5,
+      "service": 4.3,
+      "ambiance": 4.6,
+      "value": 4.4
+    }
+  },
+  "popularity_score": 85,
+  "visit_count": 20000,
+  "images": [
+    "https://res.cloudinary.com/dn6w6coku/image/upload/w_720,h_360,c_fill,q_auto,f_auto/v1745603644/WhatsApp_Image_2025-04-25_at_20.44.54_g6nupq.jpg",
+    "https://res.cloudinary.com/dn6w6coku/image/upload/w_720,h_360,c_fill,q_auto,f_auto/v1745603644/WhatsApp_Image_2025-04-25_at_20.44.58_qx1nee.jpg",
+    "https://res.cloudinary.com/dn6w6coku/image/upload/w_720,h_360,c_fill,q_auto,f_auto/v1745603644/WhatsApp_Image_2025-04-25_at_20.42.22_q54gkd.jpg"
+  ],
+  "keywords": ["sea view", "pizza", "pasta", "international", "burgers", "cozy", "family-friendly"]
+}

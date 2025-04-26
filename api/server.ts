@@ -2,7 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import userRoutes from './routes/userRoutes'; 
+import userRoutes from './routes/userRoutes';
+import restaurantRoutes from './routes/restaurantRoutes' 
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/api', userRoutes); 
+app.use('/api/restaurants', restaurantRoutes);
 
 app.get('/test', (req, res) => {
   res.send('Server is connected correctly!');

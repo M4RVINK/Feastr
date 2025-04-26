@@ -35,7 +35,7 @@ type FilterOptions = {
 
 // Random food image URLs from Unsplash
 const FOOD_IMAGES = [
-  'https://images.unsplash.com/photo-1546069901-ba9599a7e63c',
+  'https://res.cloudinary.com/dn6w6coku/image/upload/w_720,h_360,c_fill,q_auto,f_auto/v1745603644/WhatsApp_Image_2025-04-25_at_20.44.54_g6nupq.jpg',
   'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38',
   'https://images.unsplash.com/photo-1565958011703-72f8580ce9d7',
   'https://images.unsplash.com/photo-1482049016688-2d3e1b311543',

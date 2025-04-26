@@ -9,31 +9,20 @@ import {
   Image,
   SafeAreaView,
   Modal,
-  Pressable,
   FlatList,
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { lightTheme } from '../../../useTheme';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-type Restaurant = {
-  id: string;
-  name: string;
-  cuisine: string;
-  rating: number;
-  price: string;
-  distance: number;
-  deliveryTime: string;
-  imageUrl: string;
-};
+import { fetchRestaurantsWithDistance } from '../../services/restaurantService';
+import { RestaurantWithDistance } from '../../services/restaurantType';
 
 type FilterOptions = {
   cuisines: string[];
   priceRange: string[];
   distance: number;
-  sortBy: 'rating' | 'distance' | 'price' | 'delivery';
+  sortBy: 'rating' | 'distance' | 'price';
 };
 
 const CUISINE_OPTIONS = [
@@ -50,76 +39,12 @@ const CUISINE_OPTIONS = [
 
 const PRICE_RANGES = ['$', '$$', '$$$', '$$$$'];
 
-const DISTANCE_OPTIONS = [1, 3, 5, 10];
+const DISTANCE_OPTIONS = [10, 20, 50, 70];
 
 const SORT_OPTIONS = [
   { id: 'rating', label: 'Rating' },
-  { id: 'distance', label: 'Distance' },
+  { id: 'distance', label: 'Distance/Time' },
   { id: 'price', label: 'Price' },
-  { id: 'delivery', label: 'Delivery Time' },
-];
-
-const RESTAURANTS: Restaurant[] = [
-  {
-    id: '1',
-    name: 'Sakura Japanese',
-    cuisine: 'Japanese',
-    rating: 4.8,
-    price: '$$$',
-    distance: 1.2,
-    deliveryTime: '20-30 min',
-    imageUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=500&auto=format&fit=crop',
-  },
-  {
-    id: '2',
-    name: 'Tuscan Garden',
-    cuisine: 'Italian',
-    rating: 4.5,
-    price: '$$',
-    distance: 0.8,
-    deliveryTime: '15-25 min',
-    imageUrl: 'https://images.unsplash.com/photo-1516100882582-96c3a05fe590?w=500&auto=format&fit=crop',
-  },
-  {
-    id: '3',
-    name: 'Green Bowl',
-    cuisine: 'Healthy',
-    rating: 4.3,
-    price: '$$',
-    distance: 0.5,
-    deliveryTime: '10-20 min',
-    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop',
-  },
-  {
-    id: '4',
-    name: 'Taco Fiesta',
-    cuisine: 'Mexican',
-    rating: 4.2,
-    price: '$',
-    distance: 2.1,
-    deliveryTime: '25-35 min',
-    imageUrl: 'https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=500&auto=format&fit=crop',
-  },
-  {
-    id: '5',
-    name: 'Dragon Palace',
-    cuisine: 'Chinese',
-    rating: 4.0,
-    price: '$$',
-    distance: 1.8,
-    deliveryTime: '30-40 min',
-    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop',
-  },
-  {
-    id: '6',
-    name: 'Spice Route',
-    cuisine: 'Indian',
-    rating: 4.6,
-    price: '$$$',
-    distance: 3.2,
-    deliveryTime: '35-45 min',
-    imageUrl: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&auto=format&fit=crop',
-  },
 ];
 
 const DiscoverScreen = () => {
@@ -127,87 +52,39 @@ const DiscoverScreen = () => {
   const [filters, setFilters] = useState<FilterOptions>({
     cuisines: ['All'],
     priceRange: [],
-    distance: 10,
+    distance: 70,
     sortBy: 'rating',
   });
   const [showFilters, setShowFilters] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [restaurants, setRestaurants] = useState<RestaurantWithDistance[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load favorites from storage
-  useEffect(() => {
-    const loadFavorites = async () => {
-      try {
-        const saved = await AsyncStorage.getItem('favorites');
-        if (saved) setFavorites(JSON.parse(saved));
-      } catch (error) {
-        console.error('Failed to load favorites', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadFavorites();
-  }, []);
-
-  // Save favorites to storage
-  useEffect(() => {
-    const saveFavorites = async () => {
-      try {
-        await AsyncStorage.setItem('favorites', JSON.stringify(favorites));
-      } catch (error) {
-        console.error('Failed to save favorites', error);
-      }
-    };
-    saveFavorites();
-  }, [favorites]);
-
-  const toggleFavorite = (restaurantId: string) => {
-    setFavorites(prev => 
-      prev.includes(restaurantId)
-        ? prev.filter(id => id !== restaurantId)
-        : [...prev, restaurantId]
-    );
-  };
-
-  const toggleCuisine = (cuisine: string) => {
-    if (cuisine === 'All') {
-      setFilters({ ...filters, cuisines: ['All'] });
-    } else {
-      const newCuisines = filters.cuisines.includes('All')
-        ? [cuisine]
-        : filters.cuisines.includes(cuisine)
-        ? filters.cuisines.filter(c => c !== cuisine)
-        : [...filters.cuisines, cuisine];
+  const loadData = async () => {
+    try {
+      const restaurantsData = await fetchRestaurantsWithDistance();
+      console.log("Fetched restaurants:", restaurantsData);
       
-      if (newCuisines.length === 0) {
-        setFilters({ ...filters, cuisines: ['All'] });
-      } else {
-        setFilters({ ...filters, cuisines: newCuisines });
+      if (!Array.isArray(restaurantsData)) {
+        throw new Error('Invalid data format received');
       }
+
+      setRestaurants(restaurantsData);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to load data:', err);
+      setError('Failed to load restaurants. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const togglePriceRange = (price: string) => {
-    const newPriceRange = filters.priceRange.includes(price)
-      ? filters.priceRange.filter(p => p !== price)
-      : [...filters.priceRange, price];
-    setFilters({ ...filters, priceRange: newPriceRange });
-  };
+  useEffect(() => {
+    loadData();
+  }, []);
 
-  const applyFilters = () => {
-    setShowFilters(false);
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      cuisines: ['All'],
-      priceRange: [],
-      distance: 10,
-      sortBy: 'rating',
-    });
-  };
-
-  const filteredRestaurants = RESTAURANTS.filter(restaurant => {
+  const filteredRestaurants = restaurants.filter(restaurant => {
     // Search filter
     if (searchQuery && 
         !restaurant.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -226,28 +103,73 @@ const DiscoverScreen = () => {
     }
 
     // Distance filter
-    if (restaurant.distance > filters.distance) {
-      return false;
+    if (restaurant.distance) {
+      const distanceValue = parseFloat(restaurant.distance.split(' ')[0]);
+      if (!isNaN(distanceValue) && distanceValue > filters.distance) {
+        return false;
+      }
     }
 
     return true;
-  }).sort((a, b) => {
-    // Sorting logic
+  });
+
+  const sortedRestaurants = [...filteredRestaurants].sort((a, b) => {
     switch (filters.sortBy) {
       case 'rating':
-        return b.rating - a.rating;
+        return (b.ratings?.average_rating || 0) - (a.ratings?.average_rating || 0);
       case 'distance':
-        return a.distance - b.distance;
+        const aDistance = a.distance ? parseFloat(a.distance.split(' ')[0]) : Infinity;
+        const bDistance = b.distance ? parseFloat(b.distance.split(' ')[0]) : Infinity;
+        return aDistance - bDistance;
       case 'price':
-        return b.price.length - a.price.length;
-      case 'delivery':
-        const aTime = parseInt(a.deliveryTime.split('-')[0]);
-        const bTime = parseInt(b.deliveryTime.split('-')[0]);
-        return aTime - bTime;
+        // Convert price symbols to numerical values ($=1, $$=2, etc.)
+        const aPriceValue = a.price?.length || 2;
+        const bPriceValue = b.price?.length || 2;
+        return aPriceValue - bPriceValue;
       default:
         return 0;
     }
   });
+
+  const toggleFavorite = (_id: string) => {
+    setFavorites(prev => 
+      prev.includes(_id) 
+        ? prev.filter(id => id !== _id) 
+        : [...prev, _id]
+    );
+  };
+
+  const toggleCuisine = (cuisine: string) => {
+    if (cuisine === 'All') {
+      setFilters({ ...filters, cuisines: ['All'] });
+    } else {
+      const newCuisines = filters.cuisines.includes('All')
+        ? [cuisine]
+        : filters.cuisines.includes(cuisine)
+        ? filters.cuisines.filter(c => c !== cuisine)
+        : [...filters.cuisines, cuisine];
+      
+      setFilters({ ...filters, cuisines: newCuisines.length === 0 ? ['All'] : newCuisines });
+    }
+  };
+
+  const togglePriceRange = (price: string) => {
+    const newPriceRange = filters.priceRange.includes(price)
+      ? filters.priceRange.filter(p => p !== price)
+      : [...filters.priceRange, price];
+    setFilters({ ...filters, priceRange: newPriceRange });
+  };
+
+  const applyFilters = () => setShowFilters(false);
+
+  const resetFilters = () => {
+    setFilters({
+      cuisines: ['All'],
+      priceRange: [],
+      distance: 70,
+      sortBy: 'rating',
+    });
+  };
 
   const activeFilterCount = [
     filters.cuisines.length > 0 && !(filters.cuisines.length === 1 && filters.cuisines[0] === 'All'),
@@ -255,14 +177,14 @@ const DiscoverScreen = () => {
     filters.distance < 10,
   ].filter(Boolean).length;
 
-  const renderRestaurantItem = ({ item }: { item: Restaurant }) => (
+  const renderRestaurantItem = ({ item }: { item: RestaurantWithDistance }) => (
     <View style={[styles.restaurantCard, { backgroundColor: lightTheme.colors.background }]}>
       <TouchableOpacity 
-        onPress={() => router.push(`/restaurant/${item.id}`)}
+        onPress={() => router.push(`/screens/(tabs)/${item._id}`)}
         activeOpacity={0.9}
       >
         <Image 
-          source={{ uri: item.imageUrl }} 
+          source={{ uri: item.images?.[0] || 'https://via.placeholder.com/150' }} 
           style={styles.restaurantImage}
           resizeMode="cover"
         />
@@ -271,13 +193,13 @@ const DiscoverScreen = () => {
           style={styles.favoriteButton}
           onPress={(e) => {
             e.stopPropagation();
-            toggleFavorite(item.id);
+            toggleFavorite(item._id);
           }}
         >
           <Ionicons
-            name={favorites.includes(item.id) ? "heart" : "heart-outline"}
+            name={favorites.includes(item._id) ? "heart" : "heart-outline"}
             size={24}
-            color={favorites.includes(item.id) ? lightTheme.colors.primary : "white"}
+            color={favorites.includes(item._id) ? lightTheme.colors.primary : "white"}
           />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -289,7 +211,9 @@ const DiscoverScreen = () => {
           </Text>
           <View style={[styles.ratingContainer, { backgroundColor: lightTheme.colors.tabBar }]}>
             <Ionicons name="star" size={16} color={lightTheme.colors.primary} />
-            <Text style={[styles.rating, { color: lightTheme.colors.text }]}>{item.rating}</Text>
+            <Text style={[styles.rating, { color: lightTheme.colors.text }]}>
+              {item.ratings?.average_rating?.toFixed(1) || 'N/A'}
+            </Text>
           </View>
         </View>
         
@@ -298,14 +222,18 @@ const DiscoverScreen = () => {
             {item.cuisine}
           </Text>
           <Text style={[styles.distanceText, { color: lightTheme.colors.text }]}>
-            {item.distance.toFixed(1)} mi
+            {item.distance || 'N/A'}
           </Text>
         </View>
         
         <View style={styles.restaurantMeta}>
-          <Text style={[styles.priceText, { color: lightTheme.colors.text }]}>{item.price}</Text>
+          <Text style={[styles.priceText, { color: lightTheme.colors.text }]}>
+            {item.price || '$$'}
+          </Text>
           <Text style={[styles.dotSeparator, { color: lightTheme.colors.text }]}>•</Text>
-          <Text style={[styles.deliveryText, { color: lightTheme.colors.text }]}>{item.deliveryTime}</Text>
+          <Text style={[styles.timeAwayText, { color: lightTheme.colors.text }]}>
+            {item.duration || 'N/A'}
+          </Text>
         </View>
       </View>
     </View>
@@ -319,11 +247,32 @@ const DiscoverScreen = () => {
     );
   }
 
+  if (error) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: lightTheme.colors.background }]}>
+        <View style={styles.errorContainer}>
+          <Ionicons name="warning-outline" size={48} color={lightTheme.colors.primary} />
+          <Text style={[styles.errorText, { color: lightTheme.colors.text }]}>{error}</Text>
+          <TouchableOpacity 
+            style={[styles.retryButton, { backgroundColor: lightTheme.colors.primary }]}
+            onPress={() => {
+              setError(null);
+              setIsLoading(true);
+              loadData();
+            }}
+          >
+            <Text style={styles.retryButtonText}>Try Again</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: lightTheme.colors.background }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: lightTheme.colors.text }]}>Discover</Text>
+        <Text style={[styles.headerTitle, { color: lightTheme.colors.text }]}>Ready to explore?</Text>
         <TouchableOpacity 
           style={styles.filterButton}
           onPress={() => setShowFilters(true)}
@@ -349,16 +298,14 @@ const DiscoverScreen = () => {
             onChangeText={setSearchQuery}
           />
         </View>
-        <View style={styles.locationContainer}>
-          <Ionicons name="location-outline" size={16} color={lightTheme.colors.text} />
-          <Text style={[styles.locationText, { color: lightTheme.colors.text }]}>New York, NY</Text>
-        </View>
       </View>
+
+      <View style={[styles.separator, { backgroundColor: lightTheme.colors.border }]} />
 
       {/* Results Info */}
       <View style={styles.resultsInfo}>
         <Text style={[styles.resultsCount, { color: lightTheme.colors.text }]}>
-          {filteredRestaurants.length} restaurants found
+          {sortedRestaurants.length} restaurants found
         </Text>
         <TouchableOpacity onPress={() => setShowFilters(true)}>
           <Text style={[styles.sortText, { color: lightTheme.colors.primary }]}>
@@ -369,8 +316,8 @@ const DiscoverScreen = () => {
 
       {/* Restaurant List */}
       <FlatList
-        data={filteredRestaurants}
-        keyExtractor={(item) => item.id}
+        data={sortedRestaurants}
+        keyExtractor={(item) => item._id}
         contentContainerStyle={styles.restaurantList}
         renderItem={renderRestaurantItem}
         ListEmptyComponent={
@@ -489,7 +436,7 @@ const DiscoverScreen = () => {
             {/* Distance Section */}
             <View style={styles.filterSection}>
               <Text style={[styles.sectionTitle, { color: lightTheme.colors.text }]}>
-                Maximum Distance ({filters.distance} mi)
+                Maximum Distance ({filters.distance} km)
               </Text>
               <View style={styles.sliderContainer}>
                 {DISTANCE_OPTIONS.map((distance) => (
@@ -558,11 +505,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  // Add these new styles for error handling
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginVertical: 20,
+  },
+  retryButton: {
+    padding: 15,
+    borderRadius: 8,
+    width: '60%',
+    alignItems: 'center',
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  // Keep all your existing styles below exactly as they were
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
+    marginTop : 20
   },
   headerTitle: {
     fontSize: 24,
@@ -589,38 +560,52 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   searchContainer: {
-    paddingHorizontal: 16,
-    marginBottom: 16,
+    paddingHorizontal: 0,  
+    marginBottom: 2,
+    marginLeft: 0,         
+    paddingLeft: 0,        
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 12,
-    paddingHorizontal: 12,
+    paddingLeft: 12,       // Only left padding for the icon
+    paddingRight: 12,      // Right padding for balance
+    marginLeft: 0,         // Explicitly set to 0
     marginBottom: 8,
     height: 40,
+    backgroundColor: lightTheme.colors.tabBar,
   },
   searchIcon: {
     marginRight: 8,
+    alignSelf: 'center',
+    marginLeft: 0,         // Explicitly set to 0
   },
   searchInput: {
     flex: 1,
     fontSize: 16,
+    padding: 0,
+    margin: 0,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
+    marginLeft: 0,         // Explicitly set to 0
   },
-  locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+
+  separator: {
+    height: 0.9, // Even thinner
+    width: '90%',
+    alignSelf: 'center',
+    backgroundColor: lightTheme.colors.border,
+    opacity: 0.9, // Slightly transparent
   },
-  locationText: {
-    marginLeft: 4,
-    fontSize: 14,
-  },
+
   resultsInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
     marginBottom: 16,
+    marginTop: 16,
   },
   resultsCount: {
     fontSize: 14,
@@ -704,7 +689,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 6,
     fontSize: 14,
   },
-  deliveryText: {
+  timeAwayText: {
     fontSize: 14,
   },
   emptyContainer: {
