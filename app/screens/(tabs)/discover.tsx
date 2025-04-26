@@ -178,32 +178,31 @@ const DiscoverScreen = () => {
   ].filter(Boolean).length;
 
   const renderRestaurantItem = ({ item }: { item: RestaurantWithDistance }) => (
-    <View style={[styles.restaurantCard, { backgroundColor: lightTheme.colors.background }]}>
-      <TouchableOpacity 
-        onPress={() => router.push(`/screens/(tabs)/${item._id}`)}
-        activeOpacity={0.9}
+    <TouchableOpacity 
+      style={[styles.restaurantCard, { backgroundColor: lightTheme.colors.background }]}
+      onPress={() => router.push(`/screens/${item._id}`)}  // Navigate on card click
+      activeOpacity={0.9}
+    >
+      <Image 
+        source={{ uri: item.images?.[0] || 'https://via.placeholder.com/150' }} 
+        style={styles.restaurantImage}
+        resizeMode="cover"
+      />
+      
+      <TouchableOpacity
+        style={styles.favoriteButton}
+        onPress={(e) => {
+          e.stopPropagation(); // Prevent navigation on heart button click
+          toggleFavorite(item._id);
+        }}
       >
-        <Image 
-          source={{ uri: item.images?.[0] || 'https://via.placeholder.com/150' }} 
-          style={styles.restaurantImage}
-          resizeMode="cover"
+        <Ionicons
+          name={favorites.includes(item._id) ? "heart" : "heart-outline"}
+          size={24}
+          color={favorites.includes(item._id) ? lightTheme.colors.primary : "white"}
         />
-        
-        <TouchableOpacity
-          style={styles.favoriteButton}
-          onPress={(e) => {
-            e.stopPropagation();
-            toggleFavorite(item._id);
-          }}
-        >
-          <Ionicons
-            name={favorites.includes(item._id) ? "heart" : "heart-outline"}
-            size={24}
-            color={favorites.includes(item._id) ? lightTheme.colors.primary : "white"}
-          />
-        </TouchableOpacity>
       </TouchableOpacity>
-
+  
       <View style={styles.restaurantInfo}>
         <View style={styles.restaurantHeader}>
           <Text style={[styles.restaurantName, { color: lightTheme.colors.text }]}>
@@ -232,11 +231,11 @@ const DiscoverScreen = () => {
           </Text>
           <Text style={[styles.dotSeparator, { color: lightTheme.colors.text }]}>•</Text>
           <Text style={[styles.timeAwayText, { color: lightTheme.colors.text }]}>
-            {item.duration || 'N/A'}
+            {item.duration + ' away' || 'N/A'}
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   if (isLoading) {
@@ -293,7 +292,7 @@ const DiscoverScreen = () => {
           <TextInput
             style={[styles.searchInput, { color: lightTheme.colors.text }]}
             placeholder="Search restaurants or cuisines"
-            placeholderTextColor={lightTheme.colors.text}
+            placeholderTextColor= "#A9A9AC"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
@@ -723,6 +722,7 @@ const styles = StyleSheet.create({
   },
   filterSection: {
     marginBottom: 24,
+    marginTop: 12
   },
   sectionTitle: {
     fontSize: 16,
@@ -738,6 +738,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
   sortOptionActive: {},
   sortOptionText: {
@@ -755,6 +757,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
   filterOptionActive: {},
   filterOptionText: {
@@ -773,6 +777,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     minWidth: 40,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
   distanceOptionActive: {},
   distanceOptionText: {
