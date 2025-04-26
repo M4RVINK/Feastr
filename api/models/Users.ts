@@ -14,7 +14,7 @@ const userSchema: Schema<IUser> = new Schema(
     firebaseUid: { type: String, required: true, unique: true },  // Unique ID from Firebase
     email: { type: String, required: true, unique: true },
     fullName: { type: String, required: true },
-    likedRestaurants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Restaurants' }],  // References to Restaurant model (future implementation)
+    likedRestaurants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' }],  // References to Restaurant model (future implementation)
   },
   { timestamps: true }
 );

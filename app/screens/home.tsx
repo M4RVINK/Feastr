@@ -5,6 +5,8 @@ import { auth } from '../config/firebase';
 import axios from 'axios';
 import { Config } from '../../app/config/config';
 import { Ionicons } from '@expo/vector-icons';
+import { useFavoriteStore } from '../stores/favoriteStore';
+
 
 const HomeScreen = () => {
   const [fullName, setFullName] = useState<string | null>(null);
@@ -13,17 +15,17 @@ const HomeScreen = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current; // Initial opacity: 0
   const scaleAnim = useRef(new Animated.Value(0.8)).current; // Initial scale: 0.8
   const user = auth.currentUser;
+  const { fetchFavorites } = useFavoriteStore();
 
   useEffect(() => {
     const fetchFullName = async () => {
       if (user?.uid) {
         try {
-          console.log("hello");
-          console.log(Config.API_URL)
           const response = await axios.get(
             `${Config.API_URL}/api/users/${user.uid}`
           );
           setFullName(response.data.fullName);
+          await fetchFavorites(user.uid);
         } catch (error) {
           console.error('Error fetching user data:', error);
           setFullName(null);

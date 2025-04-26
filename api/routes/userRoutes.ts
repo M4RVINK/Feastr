@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import User from "../models/Users";
+import mongoose from 'mongoose';
 
 const router = Router();
 
@@ -39,7 +40,7 @@ router.get('/users/:firebaseUid', async (req: Request, res: Response): Promise<v
       }
   
       const user = await User.findOne({ firebaseUid })
-        .select('fullName') // Only return necessary fields
+        .select('fullName email') // Only return necessary fields
         .lean(); // Convert to plain JS object
   
       if (!user) {
@@ -53,8 +54,70 @@ router.get('/users/:firebaseUid', async (req: Request, res: Response): Promise<v
     }
   });
 
+// Add Favorite
+router.post('/addFavorite', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userId, restaurantId } = req.body;
+    if (!userId || !restaurantId) {
+      res.status(400).json({ message: 'Missing parameters.' });
+      return;
+    }
 
+    await User.findOneAndUpdate(
+      { firebaseUid: userId },        
+      { $addToSet: { likedRestaurants: restaurantId } }
+    );
+    
+    res.status(200).json({ message: 'Added to favorites.' });
+  } catch (error) {
+    console.error('Error adding favorite:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
 
+// Remove Favorite
+router.post('/removeFavorite', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userId, restaurantId } = req.body;
+    if (!userId || !restaurantId) {
+      res.status(400).json({ message: 'Missing parameters.' });
+      return;
+    }
 
+    await User.findOneAndUpdate(
+      { firebaseUid: userId },        
+      { $pull: { likedRestaurants: restaurantId } }
+    );
+
+    res.status(200).json({ message: 'Removed from favorites.' });
+  } catch (error) {
+    console.error('Error removing favorite:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// Get User's Favorites
+router.get('/getFavorites/:userId', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      res.status(400).json({ message: 'Missing userId' });
+      return;
+    }
+
+    const user = await User.findOne({ firebaseUid: userId }).populate('likedRestaurants');
+    
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    res.status(200).json(user.likedRestaurants);
+  } catch (error) {
+    console.error('Error fetching favorites:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 export default router;

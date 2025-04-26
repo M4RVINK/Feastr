@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, FlatList, Dimensions, Linking } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useRestaurantStore } from '../stores/restaurantStore';
+import { useFavoriteStore } from '../stores/favoriteStore';
+import { auth } from '../config/firebase';
+import Toast from 'react-native-toast-message';
 import { Ionicons } from '@expo/vector-icons';
 import { lightTheme } from '../../useTheme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function RestaurantDetail() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, origin } = useLocalSearchParams<{ id: string; origin?: string }>();
   const { restaurants } = useRestaurantStore();
+  const { favoriteIds, toggleFavorite } = useFavoriteStore();
+  const userId = auth.currentUser?.uid;
+
   const restaurant = restaurants.find(r => r._id === id);
 
-  const [liked, setLiked] = useState(false);
   const [activeTab, setActiveTab] = useState<'Info' | 'Menu' | 'Friends'>('Info');
   const [currentImage, setCurrentImage] = useState(0);
 
@@ -20,9 +25,18 @@ export default function RestaurantDetail() {
     return (
       <View style={styles.centered}>
         <Text style={{ color: lightTheme.colors.text }}>Restaurant not found</Text>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButtonInline}>
+        <TouchableOpacity 
+          onPress={() => {
+            if (origin === 'favorites') {
+              router.replace('/screens/favoriteRestaurants');
+            } else {
+              router.replace('/screens/(tabs)/discover');
+            }
+          }}
+          style={styles.backButtonInline}
+        >
           <Ionicons name="chevron-back" size={24} color={lightTheme.colors.primary} />
-          <Text style={{ color: lightTheme.colors.primary }}>Go Back</Text>
+          <Text style={{ color: lightTheme.colors.primary, marginLeft: 8 }}>Go Back</Text>
         </TouchableOpacity>
       </View>
     );
@@ -97,9 +111,19 @@ export default function RestaurantDetail() {
           )}
         />
         {/* Back Button */}
-        <TouchableOpacity style={styles.backButtonOverlay} onPress={() => router.back()}>
+        <TouchableOpacity 
+          style={styles.backButtonOverlay} 
+          onPress={() => {
+            if (origin === 'favorites') {
+              router.replace('/screens/favoriteRestaurants');
+            } else {
+              router.replace('/screens/(tabs)/discover');
+            }
+          }}
+        >
           <Ionicons name="chevron-back" size={28} color="white" />
         </TouchableOpacity>
+
         {/* Dots */}
         <View style={styles.dotsContainer}>
           {restaurant.images.map((_, index) => (
@@ -110,7 +134,34 @@ export default function RestaurantDetail() {
 
       {/* Info Section */}
       <View style={styles.infoContainer}>
-        <Text style={styles.restaurantName}>{restaurant.name}</Text>
+        <View style={styles.topRow}>
+          <Text style={styles.restaurantName}>{restaurant.name}</Text>
+          <TouchableOpacity
+            onPress={() => {
+              if (userId) {
+                toggleFavorite(restaurant._id, userId);
+                const isAlreadyFavorite = favoriteIds.includes(restaurant._id);
+                Toast.show({
+                  type: 'success',
+                  text1: isAlreadyFavorite ? 'Removed from Saved' : 'Added to Saved',
+                  visibilityTime: 2000,
+                  props: {
+                    borderLeftColor: lightTheme.colors.primary
+                  }
+                });
+              } else {
+                console.log("User not logged in!");
+              }
+            }}
+          >
+            <Ionicons
+              name={favoriteIds.includes(restaurant._id) ? "heart" : "heart-outline"}
+              size={28}
+              color={favoriteIds.includes(restaurant._id) ? lightTheme.colors.primary : lightTheme.colors.text}
+            />
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.rowInfo}>
           <Text style={styles.cuisineTag}>{restaurant.cuisine}</Text>
           <Text style={styles.priceTag}>{restaurant.price}</Text>
@@ -120,25 +171,14 @@ export default function RestaurantDetail() {
           </View>
         </View>
 
-        {/* Action Buttons */}
-        <View style={styles.actionButtonsRow}>
-          <TouchableOpacity style={styles.actionButton} onPress={handleCallPress}>
-            <Ionicons name="call-outline" size={20} color={lightTheme.colors.primary} />
-            <Text style={styles.actionButtonText}>Call</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton}>
-            <Ionicons name="share-outline" size={20} color={lightTheme.colors.primary} />
-            <Text style={styles.actionButtonText}>Share</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton} onPress={() => setLiked(!liked)}>
-            <Ionicons name={liked ? 'heart' : 'heart-outline'} size={20} color={liked ? lightTheme.colors.primary : lightTheme.colors.text} />
-          </TouchableOpacity>
-        </View>
-
         {/* Tabs */}
         <View style={styles.tabsRow}>
           {['Info', 'Menu', 'Friends'].map(tab => (
-            <TouchableOpacity key={tab} onPress={() => setActiveTab(tab as any)} style={[styles.tabButton, activeTab === tab && styles.activeTab]}>
+            <TouchableOpacity
+              key={tab}
+              onPress={() => setActiveTab(tab as any)}
+              style={[styles.tabButton, activeTab === tab && styles.activeTab]}
+            >
               <Text style={[styles.tabButtonText, activeTab === tab && styles.activeTabText]}>{tab}</Text>
             </TouchableOpacity>
           ))}
@@ -213,6 +253,8 @@ export default function RestaurantDetail() {
   );
 }
 
+
+
 const styles = StyleSheet.create({
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   backButtonInline: { flexDirection: 'row', alignItems: 'center', marginTop: 20 },
@@ -233,6 +275,7 @@ const styles = StyleSheet.create({
   actionButton: { alignItems: 'center' },
   actionButtonText: { color: lightTheme.colors.primary, fontSize: 14, marginTop: 4 },
   tabsRow: { flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 },
+  topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16},
   tabButton: { paddingBottom: 10, borderBottomWidth: 2, borderBottomColor: 'transparent' },
   activeTab: { borderBottomColor: lightTheme.colors.primary },
   tabButtonText: { fontSize: 16, color: lightTheme.colors.text },

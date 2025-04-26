@@ -18,6 +18,10 @@ import { lightTheme } from '../../../useTheme';
 import { fetchRestaurantsWithDistance } from '../../services/restaurantService';
 import { RestaurantWithDistance } from '../../services/restaurantType';
 import { useRestaurantStore } from '../../stores/restaurantStore';
+import { useFavoriteStore } from '../../stores/favoriteStore';
+import { auth } from '../../config/firebase';
+import Toast from 'react-native-toast-message';
+
 
 type FilterOptions = {
   cuisines: string[];
@@ -57,15 +61,17 @@ const DiscoverScreen = () => {
     sortBy: 'rating',
   });
   const [showFilters, setShowFilters] = useState(false);
-  const [favorites, setFavorites] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const {restaurants, setRestaurants} = useRestaurantStore();
+  const { favoriteIds, toggleFavorite } = useFavoriteStore();
+
+  const userId = auth.currentUser?.uid;
 
   const loadData = async () => {
     try {
       const restaurantsData = await fetchRestaurantsWithDistance();
-      console.log("Fetched restaurants:", restaurantsData);
+      //console.log("Fetched restaurants:", restaurantsData);
       
       if (!Array.isArray(restaurantsData)) {
         throw new Error('Invalid data format received');
@@ -133,13 +139,6 @@ const DiscoverScreen = () => {
     }
   });
 
-  const toggleFavorite = (_id: string) => {
-    setFavorites(prev => 
-      prev.includes(_id) 
-        ? prev.filter(id => id !== _id) 
-        : [...prev, _id]
-    );
-  };
 
   const toggleCuisine = (cuisine: string) => {
     if (cuisine === 'All') {
@@ -182,7 +181,8 @@ const DiscoverScreen = () => {
   const renderRestaurantItem = ({ item }: { item: RestaurantWithDistance }) => (
     <TouchableOpacity 
       style={[styles.restaurantCard, { backgroundColor: lightTheme.colors.background }]}
-      onPress={() => router.push(`/screens/${item._id}`)}  // Navigate on card click
+      onPress={() => router.push({ pathname: `/screens/${item._id}`, params: { origin: 'discover' } })}
+  // Navigate on card click
       activeOpacity={0.9}
     >
       <Image 
@@ -194,16 +194,32 @@ const DiscoverScreen = () => {
       <TouchableOpacity
         style={styles.favoriteButton}
         onPress={(e) => {
-          e.stopPropagation(); // Prevent navigation on heart button click
-          toggleFavorite(item._id);
+          e.stopPropagation();
+          if (userId) {
+            toggleFavorite(item._id, userId);
+            const isAlreadyFavorite = favoriteIds.includes(item._id);
+            Toast.show({
+              type: 'success',
+              text1: isAlreadyFavorite ? 'Removed from Favorites' : 'Added to Favorites',
+              visibilityTime: 2000,
+              props: {
+                borderLeftColor: lightTheme.colors.primary
+              }
+            });
+          } else {
+            console.log("User not logged in! Cannot favorite.");
+          }
         }}
       >
         <Ionicons
-          name={favorites.includes(item._id) ? "heart" : "heart-outline"}
+          name={favoriteIds.includes(item._id) ? "heart" : "heart-outline"}
           size={24}
-          color={favorites.includes(item._id) ? lightTheme.colors.primary : "white"}
+          color={favoriteIds.includes(item._id) ? lightTheme.colors.primary : "white"}
         />
       </TouchableOpacity>
+
+
+
   
       <View style={styles.restaurantInfo}>
         <View style={styles.restaurantHeader}>
