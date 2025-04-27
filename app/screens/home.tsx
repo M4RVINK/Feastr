@@ -17,6 +17,7 @@ const HomeScreen = () => {
   const scaleAnim = useRef(new Animated.Value(0.8)).current; // Initial scale: 0.8
   const user = auth.currentUser;
   const { fetchFavorites } = useFavoriteStore();
+  const { setUserId, resetStore } = useAIRecStore.getState();
 
   useEffect(() => {
     const fetchFullName = async () => {
@@ -31,7 +32,7 @@ const HomeScreen = () => {
           // Set AI Rec user id
           const { setUserId } = useAIRecStore.getState();
           setUserId(user.uid);
-
+          resetStore(`Hi ${response.data.fullName}! I'm your AI food guide. Tell me what you're craving or describe your perfect dining experience!`);
         } catch (error) {
           console.error('Error fetching user data:', error);
           setFullName(null);
@@ -96,7 +97,7 @@ const HomeScreen = () => {
             <Ionicons name="restaurant" size={32} color="#1ABC9C" />
           </View>
           <Text style={styles.welcomeText}>
-            Welcome, {fullName || user?.email || 'Guest'}!
+            Welcome, {fullName || user?.email || 'Guest'} !
           </Text>
         </Animated.View>
       </View>

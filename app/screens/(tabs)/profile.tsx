@@ -80,7 +80,6 @@ export default function ProfileScreen() {
               } else if (option === 'Log Out') {
                 try {
                   await signOut(auth);
-
                   // Reset aiRecStore
                   const { resetStore } = useAIRecStore.getState();
                   resetStore();
@@ -89,7 +88,7 @@ export default function ProfileScreen() {
                   console.error('Error signing out:', error);
                 }
               }
-              // Other options can be added later
+              // I'll add the future options later
             }}
           >
             <Text style={[styles.optionText, { color: lightTheme.colors.text }]}>

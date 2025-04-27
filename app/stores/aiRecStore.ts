@@ -5,7 +5,7 @@ interface Message {
   text: string;
   isUser: boolean;
   timestamp: Date;
-  recommendations?: any[]; // Restaurant[]
+  recommendations?: any[];
 }
 
 interface AIRecStore {
@@ -15,31 +15,24 @@ interface AIRecStore {
   setUserId: (userId: string | null) => void;
   setInputText: (text: string) => void;
   setMessages: (messages: Message[]) => void;
-  resetStore: () => void;
+  resetStore: (welcomeMessage?: string) => void;
 }
 
 export const useAIRecStore = create<AIRecStore>((set) => ({
   userId: null,
-  messages: [
-    {
-      id: '1',
-      text: "Hi! I'm your AI food guide. Tell me what you're craving or describe your perfect dining experience!",
-      isUser: false,
-      timestamp: new Date(),
-    },
-  ],
+  messages: [],
   inputText: '',
   
   setUserId: (userId) => set({ userId }),
   setInputText: (text) => set({ inputText: text }),
   setMessages: (messages) => set({ messages }),
-
-  resetStore: () => set({
+  
+  resetStore: (welcomeMessage) => set({
     userId: null,
     messages: [
       {
         id: '1',
-        text: "Hi! I'm your AI food guide. Tell me what you're craving or describe your perfect dining experience!",
+        text: welcomeMessage || "Hi! I'm your AI food guide. Tell me what you're craving or describe your perfect dining experience!",
         isUser: false,
         timestamp: new Date(),
       },
