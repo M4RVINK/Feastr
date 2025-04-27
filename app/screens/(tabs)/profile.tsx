@@ -7,6 +7,7 @@ import { auth } from '../../config/firebase';
 import { Config } from '../../config/config';
 import { lightTheme } from '../../../useTheme';
 import { Ionicons } from '@expo/vector-icons';
+import { useAIRecStore } from '../../stores/aiRecStore';
 
 
 export default function ProfileScreen() {
@@ -79,6 +80,10 @@ export default function ProfileScreen() {
               } else if (option === 'Log Out') {
                 try {
                   await signOut(auth);
+
+                  // Reset aiRecStore
+                  const { resetStore } = useAIRecStore.getState();
+                  resetStore();
                   router.replace('/'); // Go back to login page after logout
                 } catch (error) {
                   console.error('Error signing out:', error);

@@ -1,22 +1,22 @@
 {
-  "name": "Roadster Diner",
+  "name": "Roadster Diner Ashrafiyeh",
   "description": "A cozy restaurant with a sea/mountain view offering authentic international cuisine.",
   "tags": ["casual", "family-friendly", "international", "mountain view", "seaview"],
   "cuisine": "international",
   "view": ["mountain", "sea"],
-  "seating_capacity": 85,
+  "seating_capacity": 105,
   "opening_times": [],
   "location": {
-    "lat": 33.88578623221294,
-    "lng": 35.63920042455861
+    "lat": 33.889290021076924,
+    "lng": 35.52005647370427
   },
   "address": {
-    "street": "brummana",
-    "city": "Brummana",
+    "street": "ashrafiyeh",
+    "city": "ashrafiyeh",
     "zip": "0"
   },
   "contact_info": {
-    "phone_number": "961 04 865 591",
+    "phone_number": "961 01 111 222",
     "website_url": "https://roadsterdiner.com/"
   },
   "menu": [
@@ -167,8 +167,8 @@
     }
   ],
   "ratings": {
-    "average_rating": 4.4,
-    "total_reviews": 930,
+    "average_rating": 3.9,
+    "total_reviews": 1030,
     "detailed": {
       "food": 4.5,
       "service": 4.3,

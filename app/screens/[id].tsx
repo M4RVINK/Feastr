@@ -29,6 +29,8 @@ export default function RestaurantDetail() {
           onPress={() => {
             if (origin === 'favorites') {
               router.replace('/screens/favoriteRestaurants');
+            } else if (origin === 'ai_recs') {
+              router.replace('/screens/(tabs)/ai_recs');
             } else {
               router.replace('/screens/(tabs)/discover');
             }
@@ -116,6 +118,8 @@ export default function RestaurantDetail() {
           onPress={() => {
             if (origin === 'favorites') {
               router.replace('/screens/favoriteRestaurants');
+            } else if (origin === 'ai_recs') {
+              router.replace('/screens/(tabs)/ai_recs');
             } else {
               router.replace('/screens/(tabs)/discover');
             }
@@ -140,7 +144,7 @@ export default function RestaurantDetail() {
             onPress={() => {
               if (userId) {
                 toggleFavorite(restaurant._id, userId);
-                const isAlreadyFavorite = favoriteIds.includes(restaurant._id);
+                const isAlreadyFavorite = favoriteIds.includes(restaurant._id); // ❌ PROBLEM HERE
                 Toast.show({
                   type: 'success',
                   text1: isAlreadyFavorite ? 'Removed from Saved' : 'Added to Saved',
@@ -154,6 +158,7 @@ export default function RestaurantDetail() {
               }
             }}
           >
+
             <Ionicons
               name={favoriteIds.includes(restaurant._id) ? "heart" : "heart-outline"}
               size={28}

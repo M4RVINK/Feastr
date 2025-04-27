@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Config } from '../../app/config/config';
 import { Ionicons } from '@expo/vector-icons';
 import { useFavoriteStore } from '../stores/favoriteStore';
+import { useAIRecStore } from '../stores/aiRecStore';
 
 
 const HomeScreen = () => {
@@ -26,6 +27,11 @@ const HomeScreen = () => {
           );
           setFullName(response.data.fullName);
           await fetchFavorites(user.uid);
+
+          // Set AI Rec user id
+          const { setUserId } = useAIRecStore.getState();
+          setUserId(user.uid);
+
         } catch (error) {
           console.error('Error fetching user data:', error);
           setFullName(null);

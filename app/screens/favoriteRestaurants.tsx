@@ -45,7 +45,7 @@ export default function FavoriteRestaurantsScreen() {
       }).start();
       
     } catch (error) {
-      console.error('Error fetching saved restaurants:', error);
+      console.error('Error fetching favorite restaurants:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);
