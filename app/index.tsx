@@ -34,14 +34,14 @@ const SplashScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#9747FF', '#7B3FCC']}
+      colors={['#1ABC9C', '#7B3FCC']}
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
           <View style={styles.logoContainer}>
             <Animated.View style={[styles.logoCircle, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
-              <Ionicons name="restaurant" size={32} color="#9747FF" />
+              <Ionicons name="restaurant" size={32} color="#1ABC9C" />
             </Animated.View>
             <Animated.Text style={[styles.title, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
               Feastr

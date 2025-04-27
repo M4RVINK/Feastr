@@ -62,7 +62,7 @@ const LoginScreen = () => {
         </View>
 
         <View style={styles.logoContainer}>
-          <Ionicons name="restaurant" size={32} color="#9747FF" />
+          <Ionicons name="restaurant" size={32} color="#1ABC9C" />
         </View>
 
         <View style={styles.content}>
@@ -102,7 +102,7 @@ const LoginScreen = () => {
                   }}
                 />
                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                  <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="#9747FF" />
+                  <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="#1ABC9C" />
                 </TouchableOpacity>
               </View>
               {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: 'bold',
-    color: '#9747FF',
+    color: '#1ABC9C',
   },
   logoContainer: {
     alignItems: 'center',
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   loginButton: {
-    backgroundColor: '#9747FF',
+    backgroundColor: '#1ABC9C',
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   signUpLink: {
-    color: '#9747FF',
+    color: '#1ABC9C',
     fontSize: 16,
     fontWeight: '600',
   },

@@ -7,14 +7,14 @@ import { router } from 'expo-router';
 const WelcomeScreen = () => {
   return (
     <LinearGradient
-      colors={['#9747FF', '#7B3FCC']}
+      colors={['#1ABC9C', '#7B3FCC']}
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
           <View style={styles.logoContainer}>
             <View style={styles.logoCircle}>
-              <Ionicons name="restaurant" size={32} color="#9747FF" />
+              <Ionicons name="restaurant" size={32} color="#1ABC9C" />
             </View>
             <Text style={styles.title}>Feastr</Text>
             <Text style={styles.subtitle}>
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   buttonText: {
-    color: '#9747FF',
+    color: '#1ABC9C',
     fontSize: 16,
     fontWeight: '600',
   },

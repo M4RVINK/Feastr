@@ -74,7 +74,7 @@ const HomeScreen = () => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#9747FF" />
+        <ActivityIndicator size="large" color="#1ABC9C" />
         <Text>Loading your profile...</Text>
       </View>
     );
@@ -93,7 +93,7 @@ const HomeScreen = () => {
           ]}
         >
           <View style={styles.logoCircle}>
-            <Ionicons name="restaurant" size={32} color="#9747FF" />
+            <Ionicons name="restaurant" size={32} color="#1ABC9C" />
           </View>
           <Text style={styles.welcomeText}>
             Welcome, {fullName || user?.email || 'Guest'}!
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: 'white',
     borderWidth: 2,
-    borderColor: '#9747FF',
+    borderColor: '#1ABC9C',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 15,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   button: {
-    backgroundColor: '#9747FF',
+    backgroundColor: '#1ABC9C',
     padding: 16,
     borderRadius: 12,
     marginTop: 10,
