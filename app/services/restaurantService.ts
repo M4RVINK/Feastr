@@ -27,11 +27,11 @@ const getPriceRange = (restaurant: Restaurant): string => {
   const allItems = restaurant.menu.flatMap(section => section.items);
   if (allItems.length === 0) return '$$';
 
-  const avgPrice = allItems.reduce((sum, item) => sum + item.price, 0) / allItems.length;
+  const avgPrice = (allItems.reduce((sum, item) => sum + item.price, 0) / allItems.length)*1.5;
 
-  if (avgPrice < 10) return '$';
-  if (avgPrice < 20) return '$$';
-  if (avgPrice < 30) return '$$$';
+  if (avgPrice < 15) return '$';
+  if (avgPrice < 25) return '$$';
+  if (avgPrice < 40) return '$$$';
   return '$$$$';
 };
 

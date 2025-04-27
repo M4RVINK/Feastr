@@ -8,7 +8,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFavoriteStore } from '../stores/favoriteStore';
 import { useAIRecStore } from '../stores/aiRecStore';
 
-
 const HomeScreen = () => {
   const [fullName, setFullName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -17,7 +16,7 @@ const HomeScreen = () => {
   const scaleAnim = useRef(new Animated.Value(0.8)).current; // Initial scale: 0.8
   const user = auth.currentUser;
   const { fetchFavorites } = useFavoriteStore();
-  const { setUserId, resetStore } = useAIRecStore.getState();
+  const { resetStore } = useAIRecStore.getState();
 
   useEffect(() => {
     const fetchFullName = async () => {

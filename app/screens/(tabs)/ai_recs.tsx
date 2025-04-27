@@ -88,11 +88,11 @@ export default function AIRecsScreen() {
       });
 
       if (structuredTags.price_tag) {
-        const priceLevel = restaurant.price?.length || 2;
+        const priceLevel = restaurant.price?.length || 2; //gets the number of dollar signs
         if (
-          (structuredTags.price_tag === 'under_20_per_person' && priceLevel <= 1) ||
-          (structuredTags.price_tag === 'under_30_per_person' && priceLevel <= 2) ||
-          (structuredTags.price_tag === 'under_50_per_person' && priceLevel <= 3) ||
+          (structuredTags.price_tag === 'under_15_per_person' && priceLevel <= 1) ||
+          (structuredTags.price_tag === 'under_25_per_person' && priceLevel <= 2) ||
+          (structuredTags.price_tag === 'under_40_per_person' && priceLevel <= 3) ||
           (structuredTags.price_tag === 'expensive' && priceLevel >= 3)
         ) {
           score++;

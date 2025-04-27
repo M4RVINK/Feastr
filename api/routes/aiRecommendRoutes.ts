@@ -48,7 +48,7 @@ STRUCTURE TO FOLLOW:
 TAGGING:
 - Food Tags: Match any dish, cuisine or ingredient (e.g. BBQ, pasta, sushi, burger, pizza, etc.)
 - Ambiance Tags: Match any vibe, view, setting, or atmosphere (e.g. romantic, rooftop, cozy, sea view, mountain view)
-- Price Tag: Estimate from cheap to expensive if mentioned (under_20_per_person, under_30_per_person, under_50_per_person, expensive)
+- Price Tag: Estimate from cheap to expensive if mentioned (under_15_per_person, under_25_per_person, under_40_per_person, expensive)
 - Features: Match features like live music, dog friendly, outdoor seating, etc.
 
 IMPORTANT:
