@@ -56,13 +56,19 @@ export default function AIRecsScreen() {
       const reasons: string[] = [];
 
       (structuredTags.food_tags || []).forEach(tag => {
-        if (
-          restaurant.tags?.some((rTag: string) => rTag.toLowerCase().includes(tag.toLowerCase())) ||
-          restaurant.keywords?.some((rKeyword: string) => rKeyword.toLowerCase().includes(tag.toLowerCase())) ||
-          restaurant.cuisine?.toLowerCase().includes(tag.toLowerCase())
-        ) {
+        if (restaurant.tags?.some((rTag: string) => rTag.toLowerCase().includes(tag.toLowerCase()))) {
           score++;
-          reasons.push(`Food: ${tag}`);
+          reasons.push(`Food tag match: ${tag}`);
+        }
+
+        if (restaurant.keywords?.some((rKeyword: string) => rKeyword.toLowerCase().includes(tag.toLowerCase()))) {
+          score++;
+          reasons.push(`Keyword match: ${tag}`);
+        }
+
+        if (restaurant.cuisine?.toLowerCase().includes(tag.toLowerCase())) {
+          score++;
+          reasons.push(`Cuisine match: ${tag}`);
         }
 
         const hasMenuMatch = restaurant.menu?.some((menuSection: any) =>
@@ -72,7 +78,7 @@ export default function AIRecsScreen() {
         );
         if (hasMenuMatch) {
           score++;
-          reasons.push(`Menu item: ${tag}`);
+          reasons.push(`Menu item match: ${tag}`);
         }
       });
 
@@ -83,12 +89,12 @@ export default function AIRecsScreen() {
           restaurant.view?.some((view: string) => view.toLowerCase().includes(tag.toLowerCase()))
         ) {
           score++;
-          reasons.push(`Ambiance: ${tag}`);
+          reasons.push(`Ambiance match: ${tag}`);
         }
       });
 
       if (structuredTags.price_tag) {
-        const priceLevel = restaurant.price?.length || 2; //gets the number of dollar signs
+        const priceLevel = restaurant.price?.length || 2; // gets number of $
         if (
           (structuredTags.price_tag === 'under_15_per_person' && priceLevel <= 1) ||
           (structuredTags.price_tag === 'under_25_per_person' && priceLevel <= 2) ||
@@ -96,7 +102,7 @@ export default function AIRecsScreen() {
           (structuredTags.price_tag === 'expensive' && priceLevel >= 3)
         ) {
           score++;
-          reasons.push(`Price matches (${restaurant.price})`);
+          reasons.push(`Price match (${restaurant.price})`);
         }
       }
 
@@ -107,7 +113,7 @@ export default function AIRecsScreen() {
 
     matched.sort((a, b) => b.score - a.score);
 
-    return matched.map(m => ({
+    return matched.slice(0, 3).map(m => ({
       _id: m.restaurant._id,
       name: m.restaurant.name,
       cuisine: m.restaurant.cuisine,
@@ -145,7 +151,6 @@ export default function AIRecsScreen() {
 
       const data = await response.json();
       const structuredTags: StructuredTags = data;
-
       const recommendations = matchRestaurants(structuredTags);
 
       const aiResponse = recommendations.length === 0

@@ -1,6 +1,5 @@
 {
   "expo": {
-    "scheme": "feasterapp",
     "name": "feastr-native",
     "slug": "feastr-native",
     "version": "1.0.0",

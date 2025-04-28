@@ -32,14 +32,12 @@ type FilterOptions = {
 
 const CUISINE_OPTIONS = [
   'All',
-  'Japanese',
-  'Italian',
-  'Mexican',
-  'Chinese',
-  'Indian',
-  'American',
-  'Healthy',
-  'Mediterranean',
+  'japanese',
+  'italian',
+  'chinese',
+  'indian',
+  'american',
+  'mediterranean',
 ];
 
 const PRICE_RANGES = ['$', '$$', '$$$', '$$$$'];
